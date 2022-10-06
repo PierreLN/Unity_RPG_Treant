@@ -23,9 +23,19 @@ public class Chasseur : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        Vector3 depart = transform.position;
+        Vector3 arrivee = cible.transform.position;
+        float longueur_de_vue = 3.0f;
         //Choisir le mouvement
         Vector3 direction = cible.transform.position - transform.position;
         mouvement = direction.normalized;
+
+        Color couleur = Color.magenta;
+
+        Debug.DrawRay(depart, mouvement*longueur_de_vue, couleur);
+
+
         // Regarder dans une direction, c'est souvent réglé par une soustraction de vecteur
 
         estActif = Physics.Raycast(transform.position, mouvement * distanceVue);
