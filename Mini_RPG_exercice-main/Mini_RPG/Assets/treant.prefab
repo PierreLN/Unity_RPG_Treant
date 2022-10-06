@@ -124,6 +124,10 @@ MonoBehaviour:
   explosion: {fileID: 8296950157074669699, guid: 7ff1d8363f2e38a408298e31b17bb915, type: 3}
   joueur: {fileID: 2797886563697919841, guid: 3fc87a6f40feb234bad917749c5514a0, type: 3}
   speed: 1
+  distanceVue: 5
+  maskRayon:
+    serializedVersion: 2
+    m_Bits: 72
 --- !u!61 &2936622589554058764
 BoxCollider2D:
   m_ObjectHideFlags: 0

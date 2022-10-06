@@ -5,19 +5,23 @@ using UnityEngine;
 public class Chasseur : MonoBehaviour
 {
 
-    private Vector3 mouvement;
+    private Vector3 rayon_normalized;
     public Animator anim;
     public GameObject cible; // Pas besoin de définir exactement c'est quoi la cible
     public GameObject explosion;
     public GameObject joueur;
     public float speed = 1.0f;
     private bool estActif = false;
-    public float distanceVue = 100.0f;
+    public float distanceVue = 1.0f;
+
+    public LayerMask maskRayon;
+
+
 
     // Start is called before the first frame update
     void Start()
     {
-        mouvement.z = 0.0f;
+        rayon_normalized.z = 0.0f;
     }
 
     // Update is called once per frame
@@ -26,35 +30,49 @@ public class Chasseur : MonoBehaviour
 
         Vector3 depart = transform.position;
         Vector3 arrivee = cible.transform.position;
-        float longueur_de_vue = 3.0f;
+        float longueur_de_vue = 5.0f;
         //Choisir le mouvement
-        Vector3 direction = cible.transform.position - transform.position;
-        mouvement = direction.normalized;
+        Vector3 rayon = cible.transform.position - transform.position;
+        rayon_normalized = rayon.normalized;
 
         Color couleur = Color.magenta;
+        Color couleur_nope = Color.blue;
+        Color couleur_meh = Color.yellow;
 
-        Debug.DrawRay(depart, mouvement*longueur_de_vue, couleur);
+        Debug.DrawRay(depart, rayon_normalized * longueur_de_vue, couleur);
 
+        Physics2D.Raycast(depart, rayon_normalized, distanceVue);
+        RaycastHit2D hit = Physics2D.Raycast(depart, rayon_normalized, distanceVue, maskRayon);
 
         // Regarder dans une direction, c'est souvent réglé par une soustraction de vecteur
+        if (hit.collider != null) 
+        {
+            Debug.DrawLine(depart, hit.point, couleur_meh);
+            estActif = false;
 
-        estActif = Physics.Raycast(transform.position, mouvement * distanceVue);
+            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("joueur"))
+            {
+                estActif = true;
+                Debug.DrawRay(depart, rayon_normalized * longueur_de_vue, couleur);
+            }
+        }
+        else 
+        {
+            Debug.DrawRay(depart, rayon_normalized * distanceVue, couleur_nope);
+            estActif = false; 
+        }
 
         if (estActif)
         {
-
-
-
             // Animation
-            anim.SetFloat("Horizontal", mouvement.x);
-            anim.SetFloat("Vertical", mouvement.y);
-            anim.SetFloat("Speed", mouvement.sqrMagnitude);
+            anim.SetFloat("Horizontal", rayon_normalized.x);
+            anim.SetFloat("Vertical", rayon_normalized.y);
+            anim.SetFloat("Speed", rayon_normalized.sqrMagnitude);
 
             // walk-front_joueur = x : 0 y : -1
             // walk-back_joueur = x : 0 y : 1
             // walk-left = x : -1 y : 0
             // walk-right = x : 1 y : 0
-
         }
         else
         {
@@ -66,7 +84,7 @@ public class Chasseur : MonoBehaviour
     {
         if (estActif)
         {
-            transform.position = transform.position + mouvement * speed * Time.fixedDeltaTime;
+            transform.position = transform.position + rayon_normalized * speed * Time.fixedDeltaTime;
         }
         else
         {
@@ -76,7 +94,7 @@ public class Chasseur : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Destroy(this.gameObject);
+        //Destroy(this.gameObject);
         Instantiate(explosion, transform.position, Quaternion.identity);
     }
 }
