@@ -76,7 +76,9 @@ public class Chasseur : MonoBehaviour
         }
         else
         {
-
+            anim.SetFloat("Horizontal", 0);
+            anim.SetFloat("Vertical", 0);
+            anim.SetFloat("Speed", 0);
         }
     }
 
