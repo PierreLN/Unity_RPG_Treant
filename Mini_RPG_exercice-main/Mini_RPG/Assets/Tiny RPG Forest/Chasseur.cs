@@ -13,6 +13,7 @@ public class Chasseur : MonoBehaviour
     public float speed = 1.0f;
     private bool estActif = false;
     public float distanceVue = 1.0f;
+    private Rigidbody2D rig;
 
     public LayerMask maskRayon;
 
@@ -22,6 +23,7 @@ public class Chasseur : MonoBehaviour
     void Start()
     {
         rayon_normalized.z = 0.0f;
+        rig = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
@@ -86,10 +88,11 @@ public class Chasseur : MonoBehaviour
     {
         if (estActif)
         {
-            transform.position = transform.position + rayon_normalized * speed * Time.fixedDeltaTime;
+            rig.velocity =  rayon_normalized * speed;
         }
         else
         {
+            rig.velocity = rayon_normalized * 0;
 
         }
     }

@@ -8,6 +8,7 @@ public class mouvement_joueur : MonoBehaviour
     private Vector3 mouvement;
     private Vector3 dernierMouvement;
     public Animator anim;
+    private Rigidbody2D rig;
 
 
     public int getDirection()
@@ -41,6 +42,9 @@ public class mouvement_joueur : MonoBehaviour
     {
         mouvement.z = 0.0f;
         dernierMouvement = new Vector3(0.0f, -1.0f, 0.0f);
+
+        rig = GetComponent<Rigidbody2D>();
+
     }
 
     // Update is called once per frame
@@ -68,6 +72,10 @@ public class mouvement_joueur : MonoBehaviour
     private void FixedUpdate()
     {
         // Gérer le mouvement
-        transform.position = transform.position + mouvement.normalized * Time.fixedDeltaTime * speed; //Time.fixedDeltaTime = 1/30 seconde
+        // transform.position = transform.position + mouvement.normalized * Time.fixedDeltaTime * speed; //Time.fixedDeltaTime = 1/30 seconde
+
+
+        rig.velocity = mouvement.normalized * speed;
+
     }
 }
